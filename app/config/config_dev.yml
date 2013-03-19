@@ -9,12 +9,25 @@ web_profiler:
     toolbar: true
     intercept_redirects: false
 
+services:
+    monolog.formatter.json:
+        class: Monolog\Formatter\JsonFormatter
+    monolog.processor.introspection:
+        class: Monolog\Processor\IntrospectionProcessor
+        tags:
+            - { name: monolog.processor }
+    monolog.processor.web:
+        class: Monolog\Processor\WebProcessor
+        tags:
+            - { name: monolog.processor }
+
 monolog:
     handlers:
         main:
             type:  stream
             path:  %kernel.logs_dir%/%kernel.environment%.log
             level: debug
+            formatter: monolog.formatter.json
         firephp:
             type:  firephp
             level: info
