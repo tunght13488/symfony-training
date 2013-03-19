@@ -12,31 +12,44 @@ web_profiler:
 services:
     monolog.formatter.json:
         class: Monolog\Formatter\JsonFormatter
-    monolog.processor.introspection:
-        class: Monolog\Processor\IntrospectionProcessor
-        tags:
-            - { name: monolog.processor }
-    monolog.processor.web:
-        class: Monolog\Processor\WebProcessor
-        tags:
-            - { name: monolog.processor }
+#    monolog.processor.introspection:
+#        class: Monolog\Processor\IntrospectionProcessor
+#        tags:
+#            - { name: monolog.processor }
+#    monolog.processor.web:
+#        class: Monolog\Processor\WebProcessor
+#        tags:
+#            - { name: monolog.processor }
 
 monolog:
     handlers:
         main:
+            type:         fingers_crossed
+            action_level: critical
+            handler:      grouped
+        grouped:
+            type:    group
+            members: [streamed, buffered, firephp]
+        streamed:
             type:  stream
-            path:  %kernel.logs_dir%/%kernel.environment%.log
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
-            formatter: monolog.formatter.json
+        buffered:
+            type:    buffer
+            handler: swift
+        swift:
+            type:       swift_mailer
+            from_email: tunght2@smartosc.com
+            to_email:   tunght2@smartosc.com
+            subject:    An Error Occurred!
+            level:      info
         firephp:
-            type:  firephp
-            level: info
-        chromephp:
-            type:  chromephp
+            type: firephp
             level: info
 
 assetic:
     use_controller: true
 
-#swiftmailer:
-#    delivery_address: me@example.com
+swiftmailer:
+    delivery_address: tunght2@smartosc.com
+#    disable_delivery: true
