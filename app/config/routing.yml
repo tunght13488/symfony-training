@@ -1,0 +1,4 @@
+sm_log:
+    resource: "@SMLogBundle/Resources/config/routing.xml"
+    prefix:   /log/
+
